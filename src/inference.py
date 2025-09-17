@@ -4,16 +4,14 @@ Model inference service
 """
 
 import os
-import json
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import JSONResponse
 import pandas as pd
-import numpy as np
 import mlflow
 import mlflow.sklearn
 from pydantic import BaseModel
-from typing import List, Dict, Any
+from typing import List
 import uvicorn
+
 
 
 app = FastAPI(title="MLOps Model Server", version="1.0.0")
