@@ -13,7 +13,6 @@ from typing import List
 import uvicorn
 
 
-
 app = FastAPI(title="MLOps Model Server", version="1.0.0")
 
 # Global model variable
@@ -34,23 +33,23 @@ class PredictionResponse(BaseModel):
 def load_model():
     """Load model from MLflow"""
     global model, model_version
-    
-    mlflow_uri = os.getenv('MLFLOW_TRACKING_URI', 'http://localhost:5000')
-    model_name = os.getenv('MODEL_NAME', 'random_forest_regressor')
-    version = os.getenv('MODEL_VERSION', 'latest')
-    
+
+    mlflow_uri = os.getenv("MLFLOW_TRACKING_URI", "http://localhost:5000")
+    model_name = os.getenv("MODEL_NAME", "random_forest_regressor")
+    version = os.getenv("MODEL_VERSION", "latest")
+
     mlflow.set_tracking_uri(mlflow_uri)
-    
+
     try:
-        if version == 'latest':
+        if version == "latest":
             model_uri = f"models:/{model_name}/Latest"
         else:
             model_uri = f"models:/{model_name}/{version}"
-            
+
         model = mlflow.sklearn.load_model(model_uri)
         model_version = version
         print(f"Model loaded successfully: {model_uri}")
-        
+
     except Exception as e:
         print(f"Error loading model: {e}")
         raise
@@ -81,22 +80,21 @@ async def predict(request: PredictionRequest):
     """Make predictions"""
     if model is None:
         raise HTTPException(status_code=503, detail="Model not loaded")
-    
+
     try:
         # Convert to DataFrame
         if request.feature_names:
             df = pd.DataFrame(request.data, columns=request.feature_names)
         else:
             df = pd.DataFrame(request.data)
-        
+
         # Make predictions
         predictions = model.predict(df)
-        
+
         return PredictionResponse(
-            predictions=predictions.tolist(),
-            model_version=model_version
+            predictions=predictions.tolist(), model_version=model_version
         )
-        
+
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Prediction error: {str(e)}")
 
@@ -106,11 +104,11 @@ async def get_model_info():
     """Get model information"""
     if model is None:
         raise HTTPException(status_code=503, detail="Model not loaded")
-    
+
     return {
         "model_version": model_version,
         "model_type": type(model).__name__,
-        "feature_count": getattr(model, 'n_features_in_', 'unknown')
+        "feature_count": getattr(model, "n_features_in_", "unknown"),
     }
 
 
