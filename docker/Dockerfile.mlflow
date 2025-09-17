@@ -1,0 +1,16 @@
+FROM python:3.9-slim
+
+# Install MLflow and dependencies
+RUN pip install mlflow==2.8.1 psycopg2-binary boto3
+
+# Create mlflow user
+RUN useradd -m -u 1000 mlflow
+USER mlflow
+
+WORKDIR /home/mlflow
+
+# Expose MLflow port
+EXPOSE 5000
+
+# Default command
+CMD ["mlflow", "server", "--host", "0.0.0.0", "--port", "5000"]

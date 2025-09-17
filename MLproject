@@ -1,0 +1,21 @@
+name: mlops-starter
+
+conda_env: conda.yaml
+
+entry_points:
+  main:
+    parameters:
+      data_path: {type: str, default: "data/train.csv"}
+      n_estimators: {type: int, default: 100}
+      max_depth: {type: int, default: 10}
+    command: "python src/train.py --data-path {data_path} --n-estimators {n_estimators} --max-depth {max_depth}"
+  
+  train:
+    parameters:
+      data_path: {type: str, default: "data/train.csv"}
+      n_estimators: {type: int, default: 100}
+      max_depth: {type: int, default: 10}
+    command: "python src/train.py --data-path {data_path} --n-estimators {n_estimators} --max-depth {max_depth}"
+  
+  inference:
+    command: "python src/inference.py"
