@@ -2,6 +2,7 @@
 from unittest.mock import patch
 import pandas as pd
 import numpy as np
+import asyncio
 from src.train import load_data, train_model
 
 
@@ -34,12 +35,12 @@ def test_basic_inference_import():
     """Test that inference module imports correctly"""
     from src import inference
     assert inference.app is not None
-    
-    
-@patch('src.inference.model', None)
+
+
+@patch('src.inference.model', None)  
 def test_health_check():
     """Test health check function"""
     from src.inference import health_check
-    result = health_check()
+    result = asyncio.run(health_check())
     assert result["status"] == "healthy"
     assert "model_loaded" in result
